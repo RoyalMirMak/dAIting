@@ -50,8 +50,8 @@ def calc_Flesh_Kincaid_Grade_rus(text):
                 words += 1
     if sentences == 0 or words == 0:
         return 0
-    n = 0.49 * (float(words) / sentences) + 7.3 * (float(syllabes) / words) - 16.59
-    return n
+    n = max(min(18.0, 0.49 * (float(words) / sentences) + 7.3 * (float(syllabes) / words) - 16.59), 0.0)
+    return 1 - abs(n - 9)/9.0
 
 
 pipe = pipeline("text-classification", model="tabularisai/multilingual-sentiment-analysis")
@@ -146,7 +146,7 @@ def calculate_scores(profiles, reses):
         scores[i] += 1 * (q - reses[i].count("Не знаю"))
         scores[i] += uniqueness_scores[i] * 0.5
         scores[i] += grade_emoji_usage(profiles[i]) * 0.5
-        scores[i] += calc_Flesh_Kincaid_Grade_rus(profiles[i]) / 10
+        scores[i] += calc_Flesh_Kincaid_Grade_rus(profiles[i])
         scores[i] += grade_with_gpt(profiles[i])
 
         sentences = list(profiles[i].split("."))
