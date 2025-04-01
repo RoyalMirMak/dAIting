@@ -4,6 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from transformers import pipeline
 import emoji
+import random
 
 
 def calc_Flesh_Kincaid_Grade_rus(text):
@@ -155,6 +156,54 @@ def calculate_scores(profiles, reses):
 
     return scores
 
+def extract_info(text):
+    q = 5
+    res = make_gpt_request(prompt + text, temperature=0.6)
+    res_list = ["Не знаю" for _ in range(q)]
+    try:
+        res_list = eval(res[10:-4])
+        res_list = [str(el) if el != "_" else "Не знаю" for el in res_list]
+    except:
+        try:
+            res_list = eval(res)
+            res_list = [str(el) if el != "_" else "Не знаю" for el in res_list]
+        except:
+            print('ERROR')
+            print(res)
+    if len(res_list) != q:
+        res_list = ["Не знаю" for _ in range(q)]
+    return res_list
+
+def give_advice(text):
+    reses = [extract_info(text)]
+    _, detailed_scores = calculate_scores([text], reses, detailed=True)
+    advices = []
+    for i in range(len(detailed_scores)):
+        if detailed_scores[i] <= 0.6:
+            if i == 0:
+                advices.append("Хорошая анкета. Однако, возможно, стоит добавить информацию о том, где ты работаешь или на кого учишься. Для многих людей это важно!")
+            elif i == 1:
+                advices.append("Вау, здорово. Может быть, расскажешь в анкете подробнее о своих хобби? Это даст темы для общения.")
+            elif i == 2:
+                advices.append("Всё отлично. Единственное, я бы рекомендовал рассказать кого ты ищешь. Так потенциальный партнёр сразу сможет понять, чего ему ждать.")
+            elif i == 3:
+                advices.append("Анкета очень неплохая! Но я бы добавил больше информации о себе. Какой ты на самом деле?")
+            elif i == 4:
+                advices.append("Вау, всё классно. А можно сделать анкету ещё интереснее и добавить самый интересный факт про тебя.")
+            elif i == 6:
+                advices.append("Хмм, всё хорошо, но что-то не так. А, точно! Кажется, ты немного переборщил с эмодзи...")
+            elif i == 7:
+                advices.append("По сути всё отлично. Но читать текст немного сложновато, попробуй переписать анкету более красивым языком.")
+            elif i == 8:
+                advices.append("Всё хорошо, но я бы добавил немного юмора. Хорошая шутка никогда не повредит.")
+            elif i == 9:
+                advices.append("Единственное замечание: попробуй добавить в конец анкеты что-то, что спровоцирует пользователя тебе написать или поставить лайк.")
+            elif i == 10:
+                advices.append("На мой вкус, анкета хорошая, но немного мрачновата. Будь позитивнее!")
+    if len(advices) > 0:
+        return random.choice(advices)
+    return "Отличная анкета! Она точно будет успешной в твоём любимом сервисе для знакомств."
+
 
 questions = [
     "Кем ты работаешь/на кого учишься?",
@@ -172,6 +221,7 @@ for question in questions:
 prompt += "Профиль:\n"
 print(prompt)
 
+'''
 with open('profiles.json', 'r') as file:
     profiles_dict = json.load(file)
 
@@ -206,3 +256,4 @@ for i in range(n):
     reses.append(res_list)
 
 scores = calculate_scores(profiles_subset, reses)
+'''

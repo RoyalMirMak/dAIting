@@ -72,7 +72,7 @@ def gen_gigachat_few_shot(interview):
 import json
 import random
 
-
+'''
 def parse_jsonl_and_extract_user_content(file_path):
     user_contents = []
 
@@ -92,7 +92,7 @@ def parse_jsonl_and_extract_user_content(file_path):
 
 file_path = "/content/dataset_ft_enhanced.jsonl"
 user_contents = parse_jsonl_and_extract_user_content(file_path)
-print(user_contents[0])
+print(user_contents[0])'
 
 test_df = [random.choice(user_contents) for _ in range(100)]
 
@@ -130,3 +130,4 @@ scores4 = calculate_scores(profiles4, test_df)
 scores5 = calculate_scores(profiles5, test_df)
 scores6 = calculate_scores(profiles6, test_df)
 print(np.mean(scores1), np.mean(scores2), np.mean(scores3), np.mean(scores4), np.mean(scores5), np.mean(scores6))
+'''
