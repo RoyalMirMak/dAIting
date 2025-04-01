@@ -4,7 +4,6 @@ from openai import OpenAI
 import random
 
 system_message = "Ты --- эксперт по знакомствам, который берёт интервью с человеком и основываясь на нём, пишет для этого человека привлекательную анкету для сайта знакомств на русском языке от первого лица. Это должен быть сплошной текст без абзацов, от 15 до 75 слов."
-import json
 
 with open('handcrafted_dataset.json', 'r') as file:
     data = json.load(file)
