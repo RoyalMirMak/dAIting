@@ -4,21 +4,19 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-if int(os.getenv('USE_CHAT')):
-    API_KEY = os.getenv('GPT_KEY_CHATGPT')
-    API_URL = os.getenv('LINK_CHATGPT')
-else:
-    API_KEY = os.getenv('GPT_KEY_VSEGPT')
-    API_URL = os.getenv('LINK_VSEGPT')
+API_KEY = os.getenv('GPT_KEY_CHATGPT')
+API_URL = os.getenv('LINK_CHATGPT')
 
-def make_gpt_request(prompt, temperature=0.7, max_tokens=500):
+
+def make_gpt_request(prompt, temperature=0.7, max_tokens=500, model_name="gpt-4o-mini-2024-07-18", system_message=""):
     headers = {
         "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/json"
     }
     data = {
-        "model": "gpt-4o-mini",
+        "model": model_name,
         "messages": [
+            {"role": "system", "content": system_message},
             {"role": "user", "content": prompt}
         ],
         "max_tokens": max_tokens,
@@ -29,6 +27,7 @@ def make_gpt_request(prompt, temperature=0.7, max_tokens=500):
         return response.json()["choices"][0]["message"]["content"].strip()
     else:
         raise Exception(f"API request failed: {response.status_code}, {response.text}")
+
 
 # Example usage
 """
